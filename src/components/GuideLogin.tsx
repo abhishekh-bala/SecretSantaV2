@@ -51,7 +51,7 @@ export default function GuideLogin({ onLogin, onAdminAccess }: GuideLoginProps) 
           <h1 className="text-5xl font-bold text-white mb-2 drop-shadow-lg animate-pulse-slow">
             Secret Santa
           </h1>
-          <p className="text-xl text-white/90">Christmas 2024</p>
+          <p className="text-xl text-white/90">Team WolfPack 2025</p>
         </div>
 
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20 transform hover:scale-105 transition-transform">
@@ -97,10 +97,24 @@ export default function GuideLogin({ onLogin, onAdminAccess }: GuideLoginProps) 
 
         <div className="mt-4 text-center">
           <p className="text-white/50 text-xs">
-            Made with ❤️ for the holiday season
+            Designed and Developed by Abhishekh Dey
           </p>
         </div>
       </div>
+
+      <style>{`
+        @keyframes snowflake-fall {
+          0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+          100% { transform: translateY(100vh) translateX(100px); opacity: 0; }
+        }
+        @keyframes twinkle {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.3; transform: scale(1.5); }
+        }
+        .snowflakes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+        .snowflake { position: absolute; top: -10vh; color: white; font-size: 1.5em; opacity: 0.8; animation: snowflake-fall linear infinite; z-index: 1; }
+        .snowflake:hover { animation: twinkle 0.6s infinite; }
+      `}</style>
     </div>
   );
 }

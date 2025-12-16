@@ -18,12 +18,28 @@ export default function AdminPanel({ onBack }: AdminPanelProps) {
   const [assignments, setAssignments] = useState<AssignmentWithNames[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [tab, setTab] = useState<'guides' | 'assignments'>('guides');
+  const [tab, setTab] = useState<'guides' | 'assignments'>('assignments');
+  const [authenticated, setAuthenticated] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [authError, setAuthError] = useState('');
 
   useEffect(() => {
-    fetchGuides();
-    fetchAssignments();
-  }, []);
+    if (authenticated) {
+      fetchGuides();
+      fetchAssignments();
+    }
+  }, [authenticated]);
+
+  const handleAdminAuth = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminPassword === 'santa2024admin') {
+      setAuthenticated(true);
+      setAuthError('');
+      setAdminPassword('');
+    } else {
+      setAuthError('Invalid admin password');
+    }
+  };
 
   const fetchGuides = async () => {
     const { data, error } = await supabase
@@ -106,8 +122,65 @@ export default function AdminPanel({ onBack }: AdminPanelProps) {
     setLoading(false);
   };
 
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-red-900 via-green-900 to-red-900 flex items-center justify-center p-4">
+        <div className="snowflakes" aria-hidden="true">
+          {[...Array(20)].map((_, i) => (
+            <div key={i} className="snowflake">❅</div>
+          ))}
+        </div>
+
+        <div className="max-w-md w-full">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20">
+            <div className="text-center mb-6">
+              <Gift className="w-16 h-16 text-yellow-300 mx-auto mb-4 drop-shadow-glow" />
+              <h2 className="text-2xl font-bold text-white">Admin Access</h2>
+            </div>
+
+            <form onSubmit={handleAdminAuth}>
+              <div className="mb-4">
+                <label className="block text-white font-semibold mb-2">
+                  Admin Password
+                </label>
+                <input
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-yellow-300 focus:ring-2 focus:ring-yellow-300/50"
+                  placeholder="Enter admin password"
+                  required
+                />
+              </div>
+
+              {authError && (
+                <div className="mb-4 p-3 bg-red-500/50 rounded-lg text-white text-sm">
+                  {authError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-bold transition-all"
+              >
+                Unlock Admin Panel
+              </button>
+            </form>
+
+            <button
+              onClick={onBack}
+              className="mt-4 w-full py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white transition-all"
+            >
+              ← Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-900 via-green-900 to-red-900 p-8">
+    <div className="min-h-screen bg-gradient-to-b from-red-900 via-green-900 to-red-900 p-8 pb-24">
       <div className="snowflakes" aria-hidden="true">
         {[...Array(20)].map((_, i) => (
           <div key={i} className="snowflake">❅</div>
@@ -115,17 +188,26 @@ export default function AdminPanel({ onBack }: AdminPanelProps) {
       </div>
 
       <div className="max-w-5xl mx-auto">
-        <button
-          onClick={onBack}
-          className="mb-4 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white transition-all"
-        >
-          ← Back
-        </button>
+        <div className="flex gap-4 mb-4">
+          <button
+            onClick={onBack}
+            className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white transition-all"
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => setAuthenticated(false)}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white transition-all"
+          >
+            Logout
+          </button>
+        </div>
 
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20">
           <div className="flex items-center gap-3 mb-6">
             <Gift className="w-8 h-8 text-yellow-300" />
             <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
+            <span className="ml-auto text-yellow-300 text-sm font-semibold">Team WolfPack 2025</span>
           </div>
 
           {message && (
@@ -231,6 +313,12 @@ export default function AdminPanel({ onBack }: AdminPanelProps) {
               </div>
             </div>
           )}
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-white/50 text-xs">
+            Designed and Developed by Abhishekh Dey
+          </p>
         </div>
       </div>
     </div>

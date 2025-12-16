@@ -142,7 +142,7 @@ export default function RevealPage({ guide, onLogout }: RevealPageProps) {
             Welcome, {guide.name}! 🎅
           </h1>
           <p className="text-white/90 text-lg">
-            Your Secret Santa Picker
+            Team WolfPack 2025 Secret Santa Picker
           </p>
         </div>
 
@@ -217,8 +217,11 @@ export default function RevealPage({ guide, onLogout }: RevealPageProps) {
         </div>
 
         <div className="mt-6 text-center">
-          <p className="text-white/70">
+          <p className="text-white/70 text-sm">
             🎅 Ho Ho Ho! Merry Christmas! 🎄
+          </p>
+          <p className="text-white/50 text-xs mt-2">
+            Designed and Developed by Abhishekh Dey
           </p>
         </div>
       </div>
