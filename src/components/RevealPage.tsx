@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase, Guide } from '../lib/supabase';
 import { Gift, PartyPopper, LogOut, Shuffle } from 'lucide-react';
 
@@ -15,9 +15,16 @@ export default function RevealPage({ guide, onLogout }: RevealPageProps) {
   const [picking, setPicking] = useState(false);
   const [currentSpinName, setCurrentSpinName] = useState('');
   const [error, setError] = useState('');
+  const spinIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchData();
+
+    return () => {
+      if (spinIntervalRef.current) {
+        clearInterval(spinIntervalRef.current);
+      }
+    };
   }, []);
 
   const fetchData = async () => {
@@ -68,13 +75,16 @@ export default function RevealPage({ guide, onLogout }: RevealPageProps) {
     const frameInterval = spinDuration / spinFrames;
     let frame = 0;
 
-    const spinInterval = setInterval(() => {
+    spinIntervalRef.current = setInterval(() => {
       const randomIndex = Math.floor(Math.random() * availableGuides.length);
       setCurrentSpinName(availableGuides[randomIndex].name);
       frame++;
 
       if (frame >= spinFrames) {
-        clearInterval(spinInterval);
+        if (spinIntervalRef.current) {
+          clearInterval(spinIntervalRef.current);
+          spinIntervalRef.current = null;
+        }
 
         const finalIndex = Math.floor(Math.random() * availableGuides.length);
         const selected = availableGuides[finalIndex];
